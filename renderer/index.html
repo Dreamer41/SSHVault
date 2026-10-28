@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'">
+<link rel="stylesheet" href="../node_modules/@xterm/xterm/css/xterm.css">
+<link rel="stylesheet" href="style.css">
+<title>SSHVault</title>
+</head>
+<body>
+<div id="lock" class="overlay"></div>
+<div id="app" hidden>
+  <aside>
+    <nav>
+      <button data-tab="hosts" class="on">Hosts</button>
+      <button data-tab="keys">Keys</button>
+      <button data-tab="snippets">Snippets</button>
+      <button data-tab="tunnels">Tunnels</button>
+      <button id="backupBtn" title="Export / import (move to another computer)">⇅</button>
+      <button id="lockBtn" title="Lock vault">🔒</button>
+    </nav>
+    <div id="panel"></div>
+  </aside>
+  <main>
+    <div id="tabs"><button class="btn" id="sftpBtn" title="Open the SFTP file browser">＋ SFTP</button><button class="btn" id="splitBtn" title="Show two terminals side by side">⫼ Split ▾</button></div>
+    <div id="terms"><div class="empty" id="empty">Double-click a host to connect.<br>Click a snippet to send it to the active terminal.</div></div>
+    <div id="status"></div>
+  </main>
+</div>
+<div id="modal" class="overlay" hidden></div>
+<script src="../node_modules/@xterm/xterm/lib/xterm.js"></script>
+<script src="../node_modules/@xterm/addon-fit/lib/addon-fit.js"></script>
+<script src="snippets.js"></script>
+<script src="sftp.js"></script>
+<script src="tunnels.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

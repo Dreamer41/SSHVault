@@ -1,0 +1,93 @@
+* { box-sizing: border-box }
+body { margin: 0; font: 14px system-ui, sans-serif; background: #14161a; color: #e6e6e6; height: 100vh; overflow: hidden }
+#app { display: flex; height: 100vh }
+aside { width: 320px; border-right: 1px solid #262a31; display: flex; flex-direction: column; background: #181b20 }
+nav { display: flex }
+nav button { flex: 1; padding: 10px; background: none; border: 0; color: #9aa; cursor: pointer; border-bottom: 2px solid transparent }
+nav button.on { color: #fff; border-color: #4c8dff }
+#panel { flex: 1; overflow: auto; padding: 8px }
+main { flex: 1; display: flex; flex-direction: column; min-width: 0 }
+#tabs { display: flex; background: #181b20; border-bottom: 1px solid #262a31; overflow-x: auto }
+.tab { padding: 8px 14px; cursor: pointer; color: #9aa; white-space: nowrap; border-right: 1px solid #262a31 }
+.tab.on { background: #14161a; color: #fff }
+.tab span { margin-left: 8px; opacity: .6 }
+.tab span:hover { opacity: 1; color: #f66 }
+#terms { flex: 1; position: relative }
+.term { position: absolute; inset: 0; padding: 6px; display: none }
+.term.on { display: block }
+#status { height: 32px; flex: none; display: flex; align-items: center; gap: 4px; padding: 0 8px; background: #181b20; border-top: 1px solid #262a31; font-size: 12px; overflow: hidden; white-space: nowrap }
+#status .stat { display: flex; align-items: center; gap: 6px; padding: 3px 10px; border: 1px solid #2c323c; border-radius: 4px; background: #1d2128; color: #cfd6e0 }
+#status .stat.warn { color: #ff8b8b }
+#status canvas { width: 70px; height: 20px; background: #0e1013; border: 1px solid #2c323c }
+#sftpBtn { margin: 3px 6px; padding: 4px 10px }
+.term.sftp.on { display: flex; flex-direction: column; gap: 6px }
+.sftp-panes { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6px }
+.pane { display: flex; flex-direction: column; min-width: 0; min-height: 0; border: 1px solid #262a31; border-radius: 6px; background: #181b20; outline: none }
+.pane:focus-within { border-color: #3a4a6b }
+.pane-head { padding: 6px; display: flex; flex-direction: column; gap: 6px; border-bottom: 1px solid #262a31 }
+.pane-head select { max-width: 150px }
+.pane-head .pathbox { flex: 1; min-width: 0; font-family: monospace }
+.pane-msg { padding: 6px 10px; color: #f9b34c; font-size: 12px }
+.flist { flex: 1; overflow: auto; user-select: none }
+.flist.drop { outline: 2px dashed #4c8dff; outline-offset: -4px }
+.frow { display: grid; grid-template-columns: 1fr 90px 140px; gap: 8px; padding: 3px 10px; cursor: default; font-size: 13px }
+.frow > div { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.frow > div:nth-child(2) { text-align: right; color: #99a }
+.frow > div:nth-child(3) { color: #99a }
+.frow:not(.fhead):hover { background: #222731 }
+.frow.sel { background: #2b3f66 !important }
+.frow.droptarget { background: #1f5a3a !important }
+.fhead { position: sticky; top: 0; background: #1d2128; color: #99a; font-size: 12px; border-bottom: 1px solid #262a31; cursor: pointer }
+#xfers { flex: none; max-height: 130px; overflow: auto; display: flex; flex-direction: column; gap: 4px }
+#xfers:empty { display: none }
+.xrow { display: flex; align-items: center; gap: 10px; padding: 4px 8px; background: #1d2128; border-radius: 6px; font-size: 12px }
+.xrow.failed { background: #4a2326; cursor: pointer }
+.xlabel { flex: 0 1 55%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.barwrap { flex: 1; height: 8px; background: #0e1013; border-radius: 4px; overflow: hidden }
+.bar { height: 100%; width: 0; background: #4c8dff; transition: width .15s }
+.empty[hidden] { display: none }
+.empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; color: #667; line-height: 1.8 }
+button.btn, .item button { background: #2a3140; color: #e6e6e6; border: 0; padding: 6px 10px; border-radius: 5px; cursor: pointer }
+button.btn:hover { background: #364055 }
+button.primary { background: #4c8dff !important; color: #fff }
+button.danger { background: #7a2a2a !important }
+.item { padding: 8px; border-radius: 6px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 6px }
+.item:hover { background: #222731 }
+.item .txt { min-width: 0 }
+.item small { display: block; color: #889; margin-top: 2px; font-family: monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 210px }
+.item .acts { display: flex; gap: 4px }
+h4 { margin: 12px 6px 4px; color: #889; font-size: 11px; text-transform: uppercase }
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: flex; align-items: center; justify-content: center; z-index: 10 }
+.overlay[hidden] { display: none }
+.card { background: #1d2128; padding: 20px; border-radius: 10px; width: 420px; max-width: 92vw; display: flex; flex-direction: column; gap: 10px }
+.card h3 { margin: 0 0 4px }
+label { font-size: 12px; color: #99a; display: flex; flex-direction: column; gap: 4px }
+input, select, textarea { background: #12151a; border: 1px solid #2c323c; color: #fff; padding: 8px; border-radius: 5px; font: inherit }
+textarea { min-height: 70px; font-family: monospace }
+.row { display: flex; gap: 8px; justify-content: flex-end }
+.err { color: #f77; font-size: 12px }
+
+.cls { color: #f9b34c; font-size: 11px; margin-left: 4px }
+.ctxmenu { position: fixed; z-index: 20; background: #1d2128; border: 1px solid #2c323c; border-radius: 6px; padding: 4px; min-width: 260px; box-shadow: 0 8px 24px rgba(0,0,0,.5) }
+.ctxmenu .mi { padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px }
+.ctxmenu .mi:hover { background: #2b3f66 }
+.ctxmenu .msep { height: 1px; background: #2c323c; margin: 4px 2px }
+.cmdout { flex: none; display: flex; flex-direction: column; max-height: 220px; background: #0e1013; border: 1px solid #262a31; border-radius: 6px }
+.cmdout[hidden] { display: none }
+.cmdhead { display: flex; align-items: center; gap: 6px; padding: 4px 8px; background: #181b20; border-bottom: 1px solid #262a31 }
+.cmdtitle { flex: 1; font-size: 12px; color: #99a; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.cmdpre { margin: 0; padding: 8px; overflow: auto; font: 12px Cascadia Mono, Consolas, monospace; white-space: pre-wrap; word-break: break-all; color: #d6dde8 }
+code { background: #12151a; padding: 1px 5px; border-radius: 3px }
+
+.reconnect-bar { position: absolute; right: 16px; bottom: 14px; display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #3a2d12; border: 1px solid #7a5a1a; border-radius: 8px; color: #f9d98a; z-index: 5 }
+.reconnect-bar[hidden] { display: none }
+
+#panel.tunnels .item small { white-space: normal; max-width: none; overflow: visible }
+#splitBtn { margin: 3px 6px 3px 0; padding: 4px 10px }
+.term.l { right: 50% }
+.term.r { left: 50% }
+.term.t { bottom: 50% }
+.term.b { top: 50% }
+.term.split { border: 1px solid #262a31 }
+.term.split.focus { border-color: #4c8dff }
+.tab.also { background: #1b1f27; color: #cfd6e0 }

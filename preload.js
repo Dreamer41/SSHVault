@@ -1,0 +1,52 @@
+const { contextBridge, ipcRenderer, webUtils } = require('electron');
+
+contextBridge.exposeInMainWorld('api', {
+  vault: {
+    exists: () => ipcRenderer.invoke('vault:exists'),
+    create: (pw) => ipcRenderer.invoke('vault:create', pw),
+    unlock: (pw) => ipcRenderer.invoke('vault:unlock', pw),
+    save: (d) => ipcRenderer.invoke('vault:save', d),
+    lock: () => ipcRenderer.invoke('vault:lock'),
+    export: (pw) => ipcRenderer.invoke('vault:export', pw),
+    import: (pw, mode) => ipcRenderer.invoke('vault:import', pw, mode),
+  },
+  pickKeyFiles: () => ipcRenderer.invoke('keys:pickFiles'),
+  parseKey: (t, p) => ipcRenderer.invoke('keys:parse', t, p),
+  generateKey: (c) => ipcRenderer.invoke('keys:generate', c),
+  copy: (t) => ipcRenderer.invoke('clip:write', t),
+  paste: () => ipcRenderer.invoke('clip:read'),
+  pathFor: (file) => webUtils.getPathForFile(file), // real disk path of a file dragged in from Explorer
+  sftp: {
+    open: (id, hostId) => ipcRenderer.invoke('sftp:open', id, hostId),
+    close: (id) => ipcRenderer.invoke('sftp:close', id),
+    openS3: (id, s3id) => ipcRenderer.invoke('sftp:openS3', id, s3id),
+    restore: (id, paths, days, tier) => ipcRenderer.invoke('sftp:restore', id, paths, days, tier),
+    exec: (jobId, id, cmds) => ipcRenderer.invoke('sftp:exec', jobId, id, cmds),
+    execCancel: (jobId) => ipcRenderer.invoke('sftp:execCancel', jobId),
+    onExecOut: (cb) => ipcRenderer.on('sftp:execOut', (_, id, t) => cb(id, t)),
+    onExecDone: (cb) => ipcRenderer.on('sftp:execDone', (_, id, r) => cb(id, r)),
+    list: (id, dir) => ipcRenderer.invoke('sftp:list', id, dir),
+    mkdir: (id, dir, name) => ipcRenderer.invoke('sftp:mkdir', id, dir, name),
+    rename: (id, dir, from, to) => ipcRenderer.invoke('sftp:rename', id, dir, from, to),
+    remove: (id, dir, names) => ipcRenderer.invoke('sftp:remove', id, dir, names),
+    transfer: (jobId, srcId, srcPaths, dstId, dstDir) => ipcRenderer.invoke('sftp:transfer', jobId, srcId, srcPaths, dstId, dstDir),
+    cancel: (jobId) => ipcRenderer.invoke('sftp:cancel', jobId),
+    onProgress: (cb) => ipcRenderer.on('sftp:progress', (_, id, p) => cb(id, p)),
+    onDone: (cb) => ipcRenderer.on('sftp:done', (_, id, r) => cb(id, r)),
+    onClosed: (cb) => ipcRenderer.on('sftp:closed', (_, id) => cb(id)),
+  },
+  tunnels: {
+    start: (id) => ipcRenderer.invoke('tunnel:start', id),
+    stop: (id) => ipcRenderer.invoke('tunnel:stop', id),
+    onStatus: (cb) => ipcRenderer.on('tunnel:status', (_, id, s) => cb(id, s)),
+  },
+  ssh: {
+    connect: (id, hostId, extra) => ipcRenderer.invoke('ssh:connect', id, hostId, extra),
+    write: (id, d) => ipcRenderer.send('ssh:write', id, d),
+    resize: (id, c, r) => ipcRenderer.send('ssh:resize', id, c, r),
+    disconnect: (id) => ipcRenderer.send('ssh:disconnect', id),
+    onData: (cb) => ipcRenderer.on('ssh:data', (_, id, d) => cb(id, d)),
+    onStats: (cb) => ipcRenderer.on('ssh:stats', (_, id, s) => cb(id, s)),
+    onClose: (cb) => ipcRenderer.on('ssh:close', (_, id, info) => cb(id, info)),
+  },
+});
